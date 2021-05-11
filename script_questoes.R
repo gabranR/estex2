@@ -1,8 +1,18 @@
-load("~/estex/.RData")
 
 ###puxando pacotes
 library(ggplot2)
 library(vcd)
+library(awtools)
+## Sugestão de paleta de cores para os gráficos
+
+eq_col1 <- c("#003f5c",
+             "#2f4b7c",
+             "#665191",
+             "#a05195",
+             "#d45087",
+             "#f95d6a",
+             "#ff7c43",
+             "#ffa600")
 
 ##Questão 1
 
@@ -45,7 +55,7 @@ barplot(tab.nnasc,
         ylab="Frequência",
         xlab="Dias da semana",
         border = FALSE,
-        col=c(1,6,2,4,3,7,8),
+        col= eq_col1,
         ylim=c(0,400))
 
 #tabela de tipos de parto x dias da semana
@@ -53,7 +63,7 @@ tab_dia_parto = table(base_fin$PARTO1, base_fin$DTNASC2)
 
 
 #barplot tipos de parto x dias da semana
-barplot(tab_dia_parto, col = c(2,4), horiz = FALSE,
+barplot(tab_dia_parto, col = eq_col1[c(1,8)], horiz = FALSE,
         xlab = "Dias da semana",
         ylab = "Frequência", ylim = c(0, 250), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
@@ -124,7 +134,7 @@ barplot(tabela_mae,
         main="Gráfico de frequência do estado civil da mãe",
         ylab="Frequência",
         xlab="Estado civil",
-        col=c(6,2,4,3),
+        col=eq_col1[c(2, 4, 6, 8)],
         ylim=c(0,800))
 
 ##Questão 3
@@ -272,14 +282,14 @@ tabela_peso
 # Gráfico 01 - Histograma
 
 hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
-     ylab = "Densidade", col = c(4),
+     ylab = "Densidade", col = eq_col1[1],
      main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
 
 
 # Gráfico 02 - Histograma com Gráfico de linhas
 
 hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
-     ylab = "Densidade", col = c(4),
+     ylab = "Densidade", col = eq_col1[1],
      main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
 
 h1 = density(base_fin$PESO)
@@ -289,7 +299,7 @@ lines(h1)
 # Gráfico 03 - Histograma com Gráfico de Polígonos
 
 h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
-       ylab = "Densidade", col = c(4),
+       ylab = "Densidade", col = eq_col1[1],
        main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
 
 lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0), 
@@ -297,7 +307,7 @@ lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0),
 #------------------------------------------------------------------------#
 
 h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
-       ylab = "Frenquência", col = c(4),
+       ylab = "Frenquência", col = eq_col1[1],
        main = " ", ylim = c(0, 200), breaks = 44,border=FALSE)
 
 lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0), 
@@ -307,7 +317,7 @@ lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0),
 # Gráfico 04 - Diagrama de dispersão
 
 plot(base_fin$PESO, xlab = "Quantidade de Recém-nascidos", 
-     ylab = "Peso em Kg", col = c(1))
+     ylab = "Peso em Kg", col = eq_col1[1])
 
 ##Questão 04
 
@@ -327,7 +337,7 @@ graf_peso_idadamae = plot(base_fin$IDADEMAE, base_fin$PESO,
                           ylab = 'Peso do recém nascido',
                           xlim = c(10,50),
                           ylim = c(0, 6),
-                          col = 'black')
+                          col = eq_col1[1])
 
 
 ## Questão 05
@@ -372,13 +382,13 @@ tab_Idade_Parto
 tab_Idade_Parto = prop.table(tab_Idade_Parto, 2)
 tab_Idade_Parto
 
-barplot(tab_Idade_Parto, col = c(2,3), horiz = FALSE,
+barplot(tab_Idade_Parto, col = eq_col1[c(1, 8)], horiz = FALSE,
         xlab = "Faixas de Idade",
         ylab = "Frequência Relativa", ylim = c(0, 1), 
         beside=FALSE, legend.text = TRUE, border = FALSE)
 
 
-barplot(tab_Idade_Parto, col = c(2,3), horiz = FALSE,
+barplot(tab_Idade_Parto, col = eq_col1[c(1, 8)], horiz = FALSE,
         xlab = "Faixas de Idade",
         ylab = "Frequência Relativa", ylim = c(0, 1.3), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
@@ -418,13 +428,13 @@ tab_Esc_Parto
 tab_Esc_Parto = prop.table(tab_Esc_Parto, 2)
 tab_Esc_Parto
 
-barplot(tab_Esc_Parto, col = c(6,4), horiz = FALSE,
+barplot(tab_Esc_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
         xlab = "Escolaridade em Anos Concluídos",
         ylab = "Frequência Relativa", ylim = c(0, 1.0), 
         beside=FALSE, legend.text = TRUE, border = FALSE)
 
 
-barplot(tab_Esc_Parto, col = c(6,4), horiz = FALSE,
+barplot(tab_Esc_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
         xlab = "Escolaridade em Anos Concluídos",
         ylab = "Frequência Relativa", ylim = c(0, 1.2), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
@@ -461,22 +471,15 @@ tab_Cor_Parto
 tab_Cor_Parto = prop.table(tab_Cor_Parto, 2)
 tab_Cor_Parto
 
-barplot(tab_Cor_Parto, col = c(2,4), horiz = FALSE,
+barplot(tab_Cor_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
         xlab = "Raça da Mãe",
         ylab = "Frequência Relativa", ylim = c(0, 1.0), 
         beside=FALSE, legend.text = TRUE, border = FALSE)
 
 
-barplot(tab_Cor_Parto, col = c(2,4), horiz = FALSE,
+barplot(tab_Cor_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
         xlab = "Raça da Mãe",
         ylab = "Frequência Relativa", ylim = c(0, 1.2), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
 
 ###################################################################
-rm(base_raw)
-rm(base1)
-rm(base2)
-rm(base3)
-
-save.image(file = '.RData') 
-
