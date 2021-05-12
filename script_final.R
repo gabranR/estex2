@@ -610,8 +610,12 @@ base_fin$RACACORMAE2 = base_fin$RACACORMAE
 
 
 base_fin$RACACORMAE2 = factor(base_fin$RACACORMAE2,
-                              labels = c('Branca','Preta', 'Amarela','Parda', 'Indígena'),
-                              levels = c(1,2,3,4,5))
+                              labels = c('Branca',
+                                         'Amarela',
+                                         'Parda',
+                                         'Preta',
+                                         'Indígena'),
+                              levels = c(1,3,4,2,5))
 
 
 # B) Tabela Principal (total e relativa)
