@@ -375,7 +375,22 @@ tab_Idade_Parto = prop.table(tab_Idade_Parto, 1)
 tab_Idade_Parto
 
 
-## C) Gráfico - Idade e Tipo de Parto
+# C) Coeficiente de Contingência - Idade da Mãe e Parto
+
+tab = xtabs(~ base_fin$IDADEMAE2 + base_fin$PARTO1, data = base_fin)
+assocstats(tab)
+
+associação1 = (0.142)/((2-1)/2)**(1/2)
+associação1
+
+# Pegamos o coeficiente de contigência e dividimos
+# pelo valor do limite superior: 0 < C < ((t-1)/t)**(1/2)
+# Nesse caso, t representa o mínimo entre o número de colunas e linhas 
+# t = min(2,8)
+# Existe relação fraca: [C*<0.3]
+
+
+## D) Gráfico - Idade e Tipo de Parto
 
 tab_Idade_Parto = table(base_fin$PARTO1, base_fin$IDADEMAE2)
 tab_Idade_Parto
@@ -421,7 +436,22 @@ tab_Esc_Parto = prop.table(tab_Esc_Parto, 1)
 tab_Esc_Parto
 
 
-## C) Gráfico - Escolaridade e Tipo de Parto
+## C) Coeficiente de Contingência - Escolaridade da Mãe e Parto
+
+tab2 = xtabs(~ base_fin$ESCMAE2 + base_fin$PARTO1, data = base_fin)
+assocstats(tab2)
+
+associação2 = (0.321)/((2-1)/2)**(1/2)
+associação2
+
+# Pegamos o coeficiente de contigência e dividimos
+# pelo valor do limite superior: 0 < C < ((t-1)/t)**(1/2)
+# Nesse caso, t representa o mínimo entre o número de colunas e linhas 
+# t = min(2,5)
+# Existe relação moderada [0.3 < C* < 0.7]
+
+
+## D) Gráfico - Escolaridade e Tipo de Parto
 
 tab_Esc_Parto = table(base_fin$PARTO1, base_fin$ESCMAE2)
 tab_Esc_Parto
@@ -464,7 +494,23 @@ tab_Cor_Parto = prop.table(tab_Cor_Parto, 1)
 tab_Cor_Parto
 
 
-## C) Gráfico - Raça da Mãe e Tipo de Parto
+## C) Coeficiente de Contingência - Raça da Mãe e Parto
+
+tab3 = xtabs(~ RACACORMAE2 + base_fin$PARTO1, data = base_fin)
+assocstats(tab3)
+
+associação3 = (0.234)/((2-1)/2)**(1/2)
+associação3
+
+# Pegamos o coeficiente de contigência e dividimos
+# pelo valor do limite superior: 0 < C < ((t-1)/t)**(1/2)
+# Nesse caso, t representa o mínimo entre o número de colunas e linhas 
+# t = min(2,5)
+# Existe relação moderada [0.3 < C* < 0.7]
+
+
+
+## D) Gráfico - Raça da Mãe e Tipo de Parto
 
 tab_Cor_Parto = table(base_fin$PARTO1, base_fin$RACACORMAE2)
 tab_Cor_Parto
