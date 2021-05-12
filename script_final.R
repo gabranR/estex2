@@ -1,7 +1,111 @@
-
-###puxando pacotes
+## Bibliotécas -----------------
+library(tidyverse)
 library(ggplot2)
 library(vcd)
+library(read.dbc) #biblioteca necessária para abrir o formato de banco de dados do Ministério da Saúde
+set.seed(1234) #como determinado nas instruções
+
+## Lendo os arquivos iniciais ---------------
+
+base_raw <- bind_rows(AC = read.dbc(file = "Dados/DNAC2016.dbc"),
+                      AL = read.dbc(file = "Dados/DNAL2016.dbc"),
+                      AP = read.dbc(file = "Dados/DNAP2016.dbc"),
+                      AM = read.dbc(file = "Dados/DNAM2016.dbc"),
+                      BA = read.dbc(file = "Dados/DNBA2016.dbc"),
+                      CE = read.dbc(file = "Dados/DNCE2016.dbc"),
+                      DF = read.dbc(file = "Dados/DNDF2016.dbc"),
+                      ES = read.dbc(file = "Dados/DNES2016.dbc"),
+                      GO = read.dbc(file = "Dados/DNGO2016.dbc"),
+                      MA = read.dbc(file = "Dados/DNMA2016.dbc"),
+                      MT = read.dbc(file = "Dados/DNMT2016.dbc"),
+                      MS = read.dbc(file = "Dados/DNMS2016.dbc"),
+                      MG = read.dbc(file = "Dados/DNMG2016.dbc"),
+                      PA = read.dbc(file = "Dados/DNPA2016.dbc"),
+                      PB = read.dbc(file = "Dados/DNPB2016.dbc"),
+                      PR = read.dbc(file = "Dados/DNPR2016.dbc"),
+                      PE = read.dbc(file = "Dados/DNPE2016.dbc"),
+                      PI = read.dbc(file = "Dados/DNPI2016.dbc"),
+                      RJ = read.dbc(file = "Dados/DNRJ2016.dbc"),
+                      RN = read.dbc(file = "Dados/DNRN2016.dbc"),
+                      RS = read.dbc(file = "Dados/DNRS2016.dbc"),
+                      RO = read.dbc(file = "Dados/DNRO2016.dbc"),
+                      RR = read.dbc(file = "Dados/DNRR2016.dbc"),
+                      SC = read.dbc(file = "Dados/DNSC2016.dbc"),
+                      SP = read.dbc(file = "Dados/DNSP2016.dbc"),
+                      SE = read.dbc(file = "Dados/DNSE2016.dbc"),
+                      TO = read.dbc(file = "Dados/DNTO2016.dbc"),
+                      .id = "UF"
+)
+
+base1 <- select(base_raw, -APGAR1, -APGAR5, -VERSAOSIST)
+
+## Selecionando apenas os nascidos em Hospitais -------
+
+base1 <- filter(base1, LOCNASC == 1)
+
+
+## Fazendo algumas transformações e limpezas
+base1$CODESTAB <- as.numeric(as.character(base1$CODESTAB))
+
+base1 <- base1[!is.na(base1$CODESTAB), ]
+#
+
+## Etapa 1: Selecionar aleatroriamente no máximo 20 casos de todos os conglomerados ---------------
+
+base2 <- base1  %>%
+  group_by(
+    CODESTAB
+  ) %>%
+  slice_sample(n = 20)
+
+base2 <- ungroup(base2)
+#
+
+## Etapa 2: Selecionar aleatoriamente 200 conglomerados (hospitais) -----------------
+
+base3 <- base2 %>% filter(CODESTAB %in% sample(unique(CODESTAB),200))
+#
+
+## Etapa3: Estabelecendo a "Fração de Amostragem" -----
+
+FA <- 2000/nrow(base3)
+
+
+base3 <- base3 %>%
+  group_by(
+    CODESTAB
+  ) %>%
+  mutate(
+    Fra_Grupo = ceiling(length(CODESTAB)*FA)
+  )
+
+base3 <- ungroup(base3)
+
+##Etapa 4: Selecionando amostras aleatorias dos aglomerados---------
+# respeitando a Fração de Amostragem
+
+base_fin <- base3 %>%
+  group_by(
+    CODESTAB
+  ) %>% 
+  sample_n(
+    Fra_Grupo[1]
+  )
+
+# Devido ao arredondamento das frequências de cada grupo, dada pela
+#função ceiling(), a quantidade de casos ultrapassou os 2000
+#sendo necessária uma nova seleção aleatória
+
+
+base_fin <- base_fin[sample(nrow(base_fin), size = 2000),]
+base_fin <- ungroup(base_fin)
+
+###
+
+
+
+#Script das Questões ------------
+
 ## Sugestão de paleta de cores para os gráficos
 
 eq_col1 <- c("#003f5c",
@@ -29,20 +133,20 @@ base_fin$PARTO1 = factor(base_fin$PARTO1, labels = c("Vaginal","Cesáreo"),
 
 #Fazendo tabela numero de partos x dias de semana
 base_fin$DTNASC2 = factor(base_fin$DTNASC2,
-                           labels = c('Domingo',
-                                      'Segunda-feira',
-                                      'Terça-feira',
-                                      'Quarta-feira',
-                                      'Quinta-feira',
-                                      'Sexta-feira',
-                                      'Sábado'),
-                           levels = c('domingo',
-                                      'segunda-feira',
-                                      'terça-feira',
-                                      'quarta-feira',
-                                      'quinta-feira',
-                                      'sexta-feira',
-                                      'sábado'))
+                          labels = c('Domingo',
+                                     'Segunda-feira',
+                                     'Terça-feira',
+                                     'Quarta-feira',
+                                     'Quinta-feira',
+                                     'Sexta-feira',
+                                     'Sábado'),
+                          levels = c('domingo',
+                                     'segunda-feira',
+                                     'terça-feira',
+                                     'quarta-feira',
+                                     'quinta-feira',
+                                     'sexta-feira',
+                                     'sábado'))
 
 tab.nnasc = table(base_fin$DTNASC2)
 tab.nnasc
@@ -76,27 +180,27 @@ dados = base_fin[!is.na(base_fin$ESTCIVMAE),]
 
 
 dados$ESTCIVMAE = factor(dados$ESTCIVMAE,
-                            labels = c('Solteira',
-                                       'Casada',
-                                       'Viúva',
-                                       'Separada judicialmente/divorcia',
-                                       'União Estável',
-                                       'Ignorado'),
-                            levels = c(1,2,3,4,5,9))
+                         labels = c('Solteira',
+                                    'Casada',
+                                    'Viúva',
+                                    'Separada judicialmente/divorcia',
+                                    'União Estável',
+                                    'Ignorado'),
+                         levels = c(1,2,3,4,5,9))
 
 dados$ESTCIVMAE = factor(dados$ESTCIVMAE,
-                             labels = c('Solteira',
-                                        'Casada',
-                                        'União Estável',
-                                        'Outros',
-                                        'Outros',
-                                        'Outros'),
-                             levels = c('Solteira',
-                                        'Casada',
-                                        'União Estável',
-                                        'Viúva',
-                                        'Separada judicialmente/divorcia',
-                                        'Ignorado'))
+                         labels = c('Solteira',
+                                    'Casada',
+                                    'União Estável',
+                                    'Outros',
+                                    'Outros',
+                                    'Outros'),
+                         levels = c('Solteira',
+                                    'Casada',
+                                    'União Estável',
+                                    'Viúva',
+                                    'Separada judicialmente/divorcia',
+                                    'Ignorado'))
 summary(dados$ESTCIVMAE)
 
 #Aqui fizemos a junção de viúva, separada judicialmente/divorciada e ignorado
@@ -269,9 +373,9 @@ sqrt(2000) ## aplicável para dimensionar as classes no histograma, mas não na
 # B) Tabela - Distribuição de Frequência por Classes
 
 base_fin$PESO2 = cut(base_fin$PESO2, breaks=c(0, 1, 2, 3, 4, 5), 
-                      labels=c("0 |--- 1", "1 |--- 2","2 |--- 3", 
-                               "3 |--- 4", "4 |--- 5"),
-                      right=FALSE)
+                     labels=c("0 |--- 1", "1 |--- 2","2 |--- 3", 
+                              "3 |--- 4", "4 |--- 5"),
+                     right=FALSE)
 
 tabela_peso = addmargins(table(base_fin$PESO2))
 tabela_peso
@@ -351,12 +455,12 @@ tab_s_prematuros <- filter(tabela_peso_idademae, GESTACAO >= 5)[,1]
 
 
 plot(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO,
-                          main = "Relação entre a Idade da Mãe e o Peso dos Recém-Nascidos\n em tempo de Gestação Normal",
-                          xlab = 'Idade da mãe',
-                          ylab = 'Peso do recém nascido',
-                          xlim = c(10,50),
-                          ylim = c(0, 6),
-                          col = eq_col1[1])
+     main = "Relação entre a Idade da Mãe e o Peso dos Recém-Nascidos\n em tempo de Gestação Normal",
+     xlab = 'Idade da mãe',
+     ylab = 'Peso do recém nascido',
+     xlim = c(10,50),
+     ylim = c(0, 6),
+     col = eq_col1[1])
 #abline(h = median(tab_s_prematuros$PESO), col = eq_col1[7], lwd = 2, lty = 2)
 
 cor(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO)
@@ -555,3 +659,9 @@ barplot(tab_Cor_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
         beside=TRUE, legend.text = TRUE, border = FALSE)
 
 ###################################################################
+
+
+
+
+
+
