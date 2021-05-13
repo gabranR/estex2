@@ -3,106 +3,11 @@ library(tidyverse)
 library(ggplot2)
 library(vcd)
 library(read.dbc) #biblioteca necessária para abrir o formato de banco de dados do Ministério da Saúde
-set.seed(1234) #como determinado nas instruções
-
-## Lendo os arquivos iniciais ---------------
-
-base_raw <- bind_rows(AC = read.dbc(file = "Dados/DNAC2016.dbc"),
-                      AL = read.dbc(file = "Dados/DNAL2016.dbc"),
-                      AP = read.dbc(file = "Dados/DNAP2016.dbc"),
-                      AM = read.dbc(file = "Dados/DNAM2016.dbc"),
-                      BA = read.dbc(file = "Dados/DNBA2016.dbc"),
-                      CE = read.dbc(file = "Dados/DNCE2016.dbc"),
-                      DF = read.dbc(file = "Dados/DNDF2016.dbc"),
-                      ES = read.dbc(file = "Dados/DNES2016.dbc"),
-                      GO = read.dbc(file = "Dados/DNGO2016.dbc"),
-                      MA = read.dbc(file = "Dados/DNMA2016.dbc"),
-                      MT = read.dbc(file = "Dados/DNMT2016.dbc"),
-                      MS = read.dbc(file = "Dados/DNMS2016.dbc"),
-                      MG = read.dbc(file = "Dados/DNMG2016.dbc"),
-                      PA = read.dbc(file = "Dados/DNPA2016.dbc"),
-                      PB = read.dbc(file = "Dados/DNPB2016.dbc"),
-                      PR = read.dbc(file = "Dados/DNPR2016.dbc"),
-                      PE = read.dbc(file = "Dados/DNPE2016.dbc"),
-                      PI = read.dbc(file = "Dados/DNPI2016.dbc"),
-                      RJ = read.dbc(file = "Dados/DNRJ2016.dbc"),
-                      RN = read.dbc(file = "Dados/DNRN2016.dbc"),
-                      RS = read.dbc(file = "Dados/DNRS2016.dbc"),
-                      RO = read.dbc(file = "Dados/DNRO2016.dbc"),
-                      RR = read.dbc(file = "Dados/DNRR2016.dbc"),
-                      SC = read.dbc(file = "Dados/DNSC2016.dbc"),
-                      SP = read.dbc(file = "Dados/DNSP2016.dbc"),
-                      SE = read.dbc(file = "Dados/DNSE2016.dbc"),
-                      TO = read.dbc(file = "Dados/DNTO2016.dbc"),
-                      .id = "UF"
-)
-
-base1 <- select(base_raw, -APGAR1, -APGAR5, -VERSAOSIST)
-
-## Selecionando apenas os nascidos em Hospitais -------
-
-base1 <- filter(base1, LOCNASC == 1)
-
-
-## Fazendo algumas transformações e limpezas
-base1$CODESTAB <- as.numeric(as.character(base1$CODESTAB))
-
-base1 <- base1[!is.na(base1$CODESTAB), ]
-#
-
-## Etapa 1: Selecionar aleatroriamente no máximo 20 casos de todos os conglomerados ---------------
-
-base2 <- base1  %>%
-  group_by(
-    CODESTAB
-  ) %>%
-  slice_sample(n = 20)
-
-base2 <- ungroup(base2)
-#
-
-## Etapa 2: Selecionar aleatoriamente 200 conglomerados (hospitais) -----------------
-
-base3 <- base2 %>% filter(CODESTAB %in% sample(unique(CODESTAB),200))
-#
-
-## Etapa3: Estabelecendo a "Fração de Amostragem" -----
-
-FA <- 2000/nrow(base3)
-
-
-base3 <- base3 %>%
-  group_by(
-    CODESTAB
-  ) %>%
-  mutate(
-    Fra_Grupo = ceiling(length(CODESTAB)*FA)
-  )
-
-base3 <- ungroup(base3)
-
-##Etapa 4: Selecionando amostras aleatorias dos aglomerados---------
-# respeitando a Fração de Amostragem
-
-base_fin <- base3 %>%
-  group_by(
-    CODESTAB
-  ) %>% 
-  sample_n(
-    Fra_Grupo[1]
-  )
-
-# Devido ao arredondamento das frequências de cada grupo, dada pela
-#função ceiling(), a quantidade de casos ultrapassou os 2000
-#sendo necessária uma nova seleção aleatória
-
-
-base_fin <- base_fin[sample(nrow(base_fin), size = 2000),]
-base_fin <- ungroup(base_fin)
-
 ###
 
+##Lendo o arquivo de dados pronto -----
 
+base_fin <- readRDS("Dados/base_fin.rds")
 
 #Script das Questões ------------
 
@@ -116,6 +21,7 @@ eq_col1 <- c("#003f5c",
              "#f95d6a",
              "#ff7c43",
              "#ffa600")
+
 
 ##Questão 1
 
@@ -398,7 +304,7 @@ hist(base_fin$PESO, xlab = "Faixas de Peso em Kg",
      main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
 
 h1 = density(base_fin$PESO)
-lines(h1)
+lines(h1, lwd = 2, col = eq_col1[7])
 
 
 # Gráfico 03 - Histograma com Gráfico de Polígonos
@@ -408,7 +314,7 @@ h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg",
        main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
 
 lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0), 
-      type = "l", col = c(1))
+      type = "l", col = eq_col1[7], lwd = 2)
 #------------------------------------------------------------------------#
 
 h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
@@ -416,7 +322,7 @@ h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg",
        main = " ", ylim = c(0, 200), breaks = 44,border=FALSE)
 
 lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0), 
-      type = "l", col = c(1))
+      type = "l", col = eq_col1[7], lwd = 2)
 
 
 # Gráfico 04 - Diagrama de dispersão
@@ -429,18 +335,19 @@ plot(base_fin$PESO, xlab = "Quantidade de Recém-nascidos",
 #transformando de factor para numerico
 base_fin$IDADEMAE = as.numeric(as.character(base_fin$IDADEMAE))
 
+
 #calculando o coeficiente de correlação de Pearson
 cor(base_fin$IDADEMAE,base_fin$PESO)
+
 #tabela peso do recém nascido x idade da mãe
 tabela_peso_idademae = data.frame(IDADEMAE = base_fin$IDADEMAE,
                                   PESO = base_fin$PESO,
                                   GESTACAO = base_fin$GESTACAO)
 tabela_peso_idademae$GESTACAO <- as.numeric(as.character(tabela_peso_idademae$GESTACAO)) 
-View(tabela_peso_idademae)
 
 #gráfico peso do recém nascido x idade da mãe
 
-graf_peso_idadamae = plot(base_fin$IDADEMAE, base_fin$PESO,
+plot(base_fin$IDADEMAE, base_fin$PESO,
                           main = "Relação entre a Idade da Mãe\n e o Peso dos Recém-Nascidos no Brasil em 2016",
                           xlab = 'Idade da mãe',
                           ylab = 'Peso do recém nascido',
@@ -451,7 +358,7 @@ graf_peso_idadamae = plot(base_fin$IDADEMAE, base_fin$PESO,
 
 # Análise controlada para nascimentos prematuros
 
-tab_s_prematuros <- filter(tabela_peso_idademae, GESTACAO >= 5)[,1]
+tab_s_prematuros <- filter(tabela_peso_idademae, GESTACAO >= 5)
 
 
 plot(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO,
@@ -536,7 +443,8 @@ barplot(tab_Idade_Parto, col = eq_col1[c(1, 8)], horiz = FALSE,
 barplot(tab_Idade_Parto, col = eq_col1[c(1, 8)], horiz = FALSE,
         xlab = "Faixas de Idade",
         ylab = "Frequência Relativa", ylim = c(0, 1.3), 
-        beside=TRUE, legend.text = TRUE, border = FALSE)
+        beside=TRUE, border = FALSE)
+legend(x = 2, y = 1.3, legend = c("Vaginal", "Cesário"), cex = 0.8,fill = eq_col1[c(1, 8)])
 
 ###################################################################
 
@@ -609,9 +517,11 @@ barplot(tab_Esc_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
 base_fin$RACACORMAE2 = base_fin$RACACORMAE
 
 
-base_fin$RACACORMAE2 = factor(base_fin$RACACORMAE2,
-                              labels = c('Branca','Preta', 'Amarela','Parda', 'Indígena'),
-                              levels = c(1,2,3,4,5))
+base_fin$RACACORMAE2 = factor(
+  base_fin$RACACORMAE2,
+  labels = c('Branca', 'Amarela', 'Parda', 'Preta', 'Indígena'),
+  levels = c(1, 3, 4, 2, 5)
+)
 
 
 # B) Tabela Principal (total e relativa)

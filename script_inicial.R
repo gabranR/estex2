@@ -98,6 +98,10 @@ base_fin <- base3 %>%
 base_fin <- base_fin[sample(nrow(base_fin), size = 2000),]
 base_fin <- ungroup(base_fin)
 
+
+saveRDS(base_fin, file = "Dados/base_fin.rds")
+
+
 ##
 
 
