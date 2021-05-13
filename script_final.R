@@ -154,7 +154,7 @@ tab.nnasc
 #Fazendo grafico numero de partos x dias de semana
 barplot(tab.nnasc,
         hor=F,
-        main="Gráfico de frequência dos partos em determinados dias das semana",
+        main="Frequência dos partos \npor dias da semana no Brasil em 2016",
         ylab="Frequência",
         xlab="Dias da semana",
         border = FALSE,
@@ -167,6 +167,7 @@ tab_dia_parto = table(base_fin$PARTO1, base_fin$DTNASC2)
 
 #barplot tipos de parto x dias da semana
 barplot(tab_dia_parto, col = eq_col1[c(1,8)], horiz = FALSE,
+        main = "Frequência dos partos \npor dias da semana no Brasil em 2016",
         xlab = "Dias da semana",
         ylab = "Frequência", ylim = c(0, 250), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
@@ -229,7 +230,7 @@ grafico_estciv = ggplot(data = dados, aes(x = "", fill = ESTCIVMAE)) +
         panel.grid = element_blank(),
         panel.border = element_blank()) +
   scale_fill_manual(values = eq_col1[c(2, 4, 6, 8)]) +
-  labs(fill = "Est. Civil da Mãe")
+  labs(fill = "Est. Civil da Mãe", title = "Estado civil \ndas mães do Brasil em 2016")
 grafico_estciv 
 
 #-------------------------------------------------#
@@ -343,13 +344,7 @@ Q1
 
 boxplot(base_fin$PESO, 
         main = "", xlab= "Peso em Kg dos Recém-nascidos",
-        ylab= "", horizontal = TRUE)
-
-boxplot(base_fin$PESO, 
-        main = "", xlab= "Peso dos Recém-nascidos",
-        ylab= "Peso em Kg")
-
-
+        ylab= "", horizontal = TRUE) 
 
 # 3.2) Tabelas e Gráficos da Variável Peso
 
@@ -402,14 +397,6 @@ lines(h1)
 
 
 # Gráfico 03 - Histograma com Gráfico de Polígonos
-
-h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
-       ylab = "Densidade", col = eq_col1[1],
-       main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
-
-lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0), 
-      type = "l", col = c(1))
-#------------------------------------------------------------------------#
 
 h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
        ylab = "Frenquência", col = eq_col1[1],
