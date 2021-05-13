@@ -517,11 +517,21 @@ barplot(tab_Esc_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
 base_fin$RACACORMAE2 = base_fin$RACACORMAE
 
 
+<<<<<<< HEAD
 base_fin$RACACORMAE2 = factor(
   base_fin$RACACORMAE2,
   labels = c('Branca', 'Amarela', 'Parda', 'Preta', 'Indígena'),
   levels = c(1, 3, 4, 2, 5)
 )
+=======
+base_fin$RACACORMAE2 = factor(base_fin$RACACORMAE2,
+                              labels = c('Branca',
+                                         'Amarela',
+                                         'Parda',
+                                         'Preta',
+                                         'Indígena'),
+                              levels = c(1,3,4,2,5))
+>>>>>>> a2c5a0879c019de5643e424b89ac9f5a3bd6dcdc
 
 
 # B) Tabela Principal (total e relativa)
