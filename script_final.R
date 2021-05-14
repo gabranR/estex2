@@ -22,6 +22,7 @@ eq_col1 <- c("#003f5c",
              "#ff7c43",
              "#ffa600")
 
+###############################################################################
 
 ##Questão 1
 
@@ -77,6 +78,8 @@ barplot(tab_dia_parto, col = eq_col1[c(1,8)], horiz = FALSE,
         xlab = "Dias da semana",
         ylab = "Frequência", ylim = c(0, 250), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
+
+###############################################################################
 
 ##Questão 2
 
@@ -134,9 +137,11 @@ grafico_estciv = ggplot(data = dados, aes(x = "", fill = ESTCIVMAE)) +
         axis.text = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
-        panel.border = element_blank()) +
+        panel.border = element_blank(),
+        plot.title = element_text(hjust = 0.5)) +
   scale_fill_manual(values = eq_col1[c(2, 4, 6, 8)]) +
-  labs(fill = "Est. Civil da Mãe", title = "Estado civil \ndas mães do Brasil em 2016")
+  labs(fill = "Est. Civil da Mãe",
+       title = "Percentual de cada \nestado civil das mães do Brasil em 2016")
 grafico_estciv 
 
 #-------------------------------------------------#
@@ -149,14 +154,13 @@ barplot(tabela_mae,
         col=eq_col1[c(2, 4, 6, 8)],
         ylim=c(0,800))
 
+###############################################################################
+
 ##Questão 3
 
-## Transformando a variável em numeric e padronizando em KG
+## Transformando a variável em numeric
 
 base_fin$PESO = as.numeric(as.character(base_fin$PESO))
-
-base_fin$PESO = base_fin$PESO/1000
-
 
 
 # 3.1) Cálculo de Medidas Resumo e box-plot
@@ -196,16 +200,16 @@ desvio_padrao
 coeficiente_variacao = sd(base_fin$PESO)/mean(base_fin$PESO)
 coeficiente_variacao
 
-Q3 = 3.555
-Q1 = 2.930
+Q3 = 3555
+Q1 = 2930
 
 Amplitude_Interquartilica = Q3 - Q1
 Amplitude_Interquartilica
 
 ## As medidas de dispersão retornam informações importantes sobre
 ## a variabilidade do conjunto de dados.Nessa perspectiva, observamos
-## um desvio padrão em torno de 0.52, o que representa uma maior distribuição
-## dos pesos entre 2.7 KG e 3.72. Além disso, temos um coeficiente
+## um desvio padrão em torno de 518, o que representa uma maior distribuição
+## dos pesos entre 2709 KG e 3745. Além disso, temos um coeficiente
 ## de variação em cerca de 0.16 ou 16%, o que caracteriza uma variação
 ## que já não é baixa, mas também não chega a ser um número alto.
 
@@ -229,7 +233,7 @@ D1
 D9 = quantile(base_fin$PESO, probs = 0.90)
 D9
 
-Coef_achatamento = (Q3 - Q1)/(2*(3.81 - 2.65))
+Coef_achatamento = (Q3 - Q1)/(2*(3810 - 2650))
 Coef_achatamento
 
 ## Achatamento > 0.263 - distribuição platicúrtica, mas
@@ -249,8 +253,17 @@ Q3
 Q1
 
 boxplot(base_fin$PESO, 
-        main = "", xlab= "Peso em Kg dos Recém-nascidos",
-        ylab= "", horizontal = TRUE) 
+        main = "Box-plot da Distribuição dos Pesos de Recém-nascidos 
+– Brasil, 2016", 
+        xlab= "Peso em gramas dos Recém-nascidos",
+        ylab= "", horizontal = TRUE)
+
+boxplot(base_fin$PESO, 
+        main = "Box-plot da distribuição dos pesos de recém-nascidos     
+– Brasil, 2016", xlab= "Peso dos Recém-nascidos",
+        ylab= "Peso em gramas")
+
+
 
 # 3.2) Tabelas e Gráficos da Variável Peso
 
@@ -259,23 +272,29 @@ boxplot(base_fin$PESO,
 base_fin$PESO2 = base_fin$PESO
 
 Amplitude_Total
-min(base_fin$PESO)
-max(base_fin$PESO)
+min(base_fin$PESO2)
+max(base_fin$PESO2)
 
 stem(base_fin$PESO2) ## não ficou interessante para dimensionar as classes
 sqrt(2000) ## aplicável para dimensionar as classes no histograma, mas não na
 ## na apresentação tabular.
 
-## Intervalos para a tabela: 0 |--- 1 ; 1 |--- 2 ; 2 |--- 3 ; 3 |--- 4 ; 4 |--- 5
-## Intervalos para o histograma: de 0.1 em 0.1
+## Intervalos para a tabela: 0 |--- 500 ; 500 |--- 1000 ; 1000 |--- 1500 ; 
+## 1500 |--- 2000 ; 2000 |--- 2500 ; 2500 |--- 3000  ; 3000 |--- 3500  ;
+## 3500 |--- 4000  ; 4000 |--- 4500  ; 4500 |--- 5000 ;
+
+## Intervalos para o histograma: de 100 gramas em 100 gramas (44 breaks)
 
 
 
 # B) Tabela - Distribuição de Frequência por Classes
 
-base_fin$PESO2 = cut(base_fin$PESO2, breaks=c(0, 1, 2, 3, 4, 5), 
-                     labels=c("0 |--- 1", "1 |--- 2","2 |--- 3", 
-                              "3 |--- 4", "4 |--- 5"),
+base_fin$PESO2 = cut(base_fin$PESO2, breaks=c(0, 500, 1000, 1500, 2000, 2500, 
+                                              3000, 3500, 4000, 4500, 5000), 
+                     labels=c("0 |--- 500", "500 |--- 1000","1000 |--- 1500", 
+                              "1500 |--- 2000", "2000 |--- 2500", "2500 |--- 3000",
+                              "3000 |--- 3500","3500 |--- 4000","4000 |--- 4500",
+                              "4500 |--- 5000"),
                      right=FALSE)
 
 tabela_peso = addmargins(table(base_fin$PESO2))
@@ -285,18 +304,22 @@ tabela_peso
 
 # C) Gráficos: Histograma e Dispersão
 
-# Gráfico 01 - Histograma
+## Gráfico 01 - Histograma
 
-hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
-     ylab = "Densidade", col = eq_col1[1],
-     main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
+hist(base_fin$PESO, xlab = "Faixas de Peso em Gramas",
+     main = "Histograma da Distribuição dos Pesos de Recém-nascidos 
+– Brasil, 2016",
+     ylab = "Frequência Total", col = eq_col1[1],
+     ylim = c(0, 200), breaks = 44,border=FALSE, freq = TRUE)
 
 
 # Gráfico 02 - Histograma com Gráfico de linhas
 
-hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
+hist(base_fin$PESO, xlab = "Faixas de Peso em Gramas",
+     main = "Distribuição dos Pesos de Recém-nascidos 
+– Brasil, 2016",
      ylab = "Densidade", col = eq_col1[1],
-     main = " ", ylim = c(0, 1), breaks = 44,border=FALSE, freq = FALSE)
+     ylim = c(0, 0.001), breaks = 44,border=FALSE, freq = FALSE)
 
 h1 = density(base_fin$PESO)
 lines(h1, lwd = 2, col = eq_col1[7])
@@ -304,40 +327,46 @@ lines(h1, lwd = 2, col = eq_col1[7])
 
 # Gráfico 03 - Histograma com Gráfico de Polígonos
 
-
-#------------------------------------------------------------------------#
-
-h=hist(base_fin$PESO, xlab = "Faixas de Peso em Kg", 
-       ylab = "Frenquência", col = eq_col1[1],
-       main = " ", ylim = c(0, 200), breaks = 44,border=FALSE)
+h=hist(base_fin$PESO, xlab = "Faixas de Peso em Gramas",
+       main = "Distribuição dos Pesos de Recém-nascidos 
+– Brasil, 2016",
+       ylab = "Frequência Total", col = eq_col1[1],
+       ylim = c(0, 200), breaks = 44,border=FALSE, freq = TRUE)
 
 lines(c(min(h$breaks), h$mids, max(h$breaks)), c(0,h$counts, 0), 
       type = "l", col = eq_col1[7], lwd = 2)
 
 
-# Gráfico 04 - Diagrama de dispersão
+# Gráfico 04 - Dispersão
 
 plot(base_fin$PESO, xlab = "Quantidade de Recém-nascidos", 
-     ylab = "Peso em Kg", col = eq_col1[1])
+     ylab = "Peso em gramas", col = eq_col1[1])
+
+
+## Transformação do peso para Kg
+
+base_fin$PESO = base_fin$PESO/1000
+
+
+###############################################################################
 
 ##Questão 04 ----------
 
 #transformando de factor para numerico
 base_fin$IDADEMAE = as.numeric(as.character(base_fin$IDADEMAE))
 
-
 #calculando o coeficiente de correlação de Pearson
 cor(base_fin$IDADEMAE,base_fin$PESO)
-
 #tabela peso do recém nascido x idade da mãe
 tabela_peso_idademae = data.frame(IDADEMAE = base_fin$IDADEMAE,
                                   PESO = base_fin$PESO,
                                   GESTACAO = base_fin$GESTACAO)
 tabela_peso_idademae$GESTACAO <- as.numeric(as.character(tabela_peso_idademae$GESTACAO)) 
+View(tabela_peso_idademae)
 
 #gráfico peso do recém nascido x idade da mãe
 
-plot(base_fin$IDADEMAE, base_fin$PESO,
+graf_peso_idadamae = plot(base_fin$IDADEMAE, base_fin$PESO,
                           main = "Relação entre a Idade da Mãe\n e o Peso dos Recém-Nascidos no Brasil em 2016",
                           xlab = 'Idade da mãe',
                           ylab = 'Peso do recém nascido',
@@ -348,7 +377,7 @@ plot(base_fin$IDADEMAE, base_fin$PESO,
 
 # Análise controlada para nascimentos prematuros
 
-tab_s_prematuros <- filter(tabela_peso_idademae, GESTACAO >= 5)
+tab_s_prematuros <- filter(tabela_peso_idademae, GESTACAO >= 5)[,1]
 
 
 plot(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO,
@@ -362,16 +391,15 @@ plot(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO,
 
 cor(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO)
 
-
-
-
-
+###############################################################################
 
 ## Questão 05
 
 # 5.1) Associação entre Tipo de Parto e Idade da Mãe
 
-# A) Categorização das Variáveis Parto e Idade da Mãe
+# A) Categorização da Variável Idade da Mãe - apenas para apresentação tabular
+# Como temos uma variável quantitativa e outra qualitativa, a análise será
+# realizada utilizando o coeficiente R2
 
 base_fin$IDADEMAE2 = base_fin$IDADEMAE
 
@@ -402,39 +430,48 @@ tab_Idade_Parto = prop.table(tab_Idade_Parto, 1)
 tab_Idade_Parto
 
 
-# C) Coeficiente de Contingência - Idade da Mãe e Parto
+# C) Coeficiente R2 - Idade da Mãe e Tipo de Parto
 
-tab = xtabs(~ base_fin$IDADEMAE2 + base_fin$PARTO1, data = base_fin)
-assocstats(tab)
+## sepando bases diferentes para calcular a variância da Idade
+## em cada categoria (vaginal, cesáreo)
 
-associação1 = (0.142)/((2-1)/2)**(1/2)
-associação1
+base_idade_vag = filter(base_fin, PARTO == 1)
+base_idade_ces = filter(base_fin, PARTO == 2)
 
-# Pegamos o coeficiente de contigência e dividimos
-# pelo valor do limite superior: 0 < C < ((t-1)/t)**(1/2)
-# Nesse caso, t representa o mínimo entre o número de colunas e linhas 
-# t = min(2,8)
-# Existe relação fraca: [C*<0.3]
+## idade na base geral
+summary(base_fin$IDADEMAE) 
+var_idade_parto = var(base_fin$IDADEMAE)
+var_idade_parto
+
+## idade na categoria parto vaginal
+summary(base_idade_vag$IDADEMAE)
+var_idade_vag = var(base_idade_vag$IDADEMAE)
+var_idade_vag
+
+## idade na categoria parto cesáreo
+summary(base_idade_ces$IDADEMAE)
+var_idade_cesáreo = var(base_idade_ces$IDADEMAE)
+var_idade_cesáreo
+
+## Cálculo de Associação - R2
+media_variancias = ((922*var_idade_vag) + (1074*var_idade_cesáreo)) / 1996
+media_variancias
+
+R2 = 1 - (media_variancias / var_idade_parto)
+R2
+
+## Associação inferior a 0,3. Apenas 1,8 % dos partos são explicados 
+## pela variável idade.
+
 
 
 ## D) Gráfico - Idade e Tipo de Parto
 
-tab_Idade_Parto = table(base_fin$PARTO1, base_fin$IDADEMAE2)
-tab_Idade_Parto
-tab_Idade_Parto = prop.table(tab_Idade_Parto, 2)
-tab_Idade_Parto
+boxplot(base_fin$IDADEMAE ~ base_fin$PARTO1, 
+        main = "Box-plot da Associação entre Idade da Mães e Tipo de Parto     
+– Brasil, 2016", xlab= "Tipo de Parto",
+        ylab= "Idade das Mães")
 
-barplot(tab_Idade_Parto, col = eq_col1[c(1, 8)], horiz = FALSE,
-        xlab = "Faixas de Idade",
-        ylab = "Frequência Relativa", ylim = c(0, 1), 
-        beside=FALSE, legend.text = TRUE, border = FALSE)
-
-
-barplot(tab_Idade_Parto, col = eq_col1[c(1, 8)], horiz = FALSE,
-        xlab = "Faixas de Idade",
-        ylab = "Frequência Relativa", ylim = c(0, 1.3), 
-        beside=TRUE, border = FALSE)
-legend(x = 2, y = 1.3, legend = c("Vaginal", "Cesário"), cex = 0.8,fill = eq_col1[c(1, 8)])
 
 ###################################################################
 
@@ -442,6 +479,7 @@ legend(x = 2, y = 1.3, legend = c("Vaginal", "Cesário"), cex = 0.8,fill = eq_co
 # 5.2) Associação entre Tipo de Parto e Escolaridade
 
 # A) Categorização das Variável Escolaridade
+# 
 
 base_fin$ESCMAE2 = base_fin$ESCMAE
 
@@ -487,12 +525,16 @@ tab_Esc_Parto = prop.table(tab_Esc_Parto, 2)
 tab_Esc_Parto
 
 barplot(tab_Esc_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
+        main = "Frequência Relativa do Tipo de Parto 
+Segundo Escolaridade das Mães - Brasil, 2016",
         xlab = "Escolaridade em Anos Concluídos",
         ylab = "Frequência Relativa", ylim = c(0, 1.0), 
         beside=FALSE, legend.text = TRUE, border = FALSE)
 
 
 barplot(tab_Esc_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
+        main = "Frequência Relativa do Tipo de Parto 
+Segundo Escolaridade das Mães - Brasil, 2016",
         xlab = "Escolaridade em Anos Concluídos",
         ylab = "Frequência Relativa", ylim = c(0, 1.2), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
@@ -514,6 +556,7 @@ base_fin$RACACORMAE2 = factor(base_fin$RACACORMAE2,
                                          'Preta',
                                          'Indígena'),
                               levels = c(1,3,4,2,5))
+
 
 # B) Tabela Principal (total e relativa)
 # Variável Resposta - Tipo de Parto
@@ -549,17 +592,22 @@ tab_Cor_Parto = prop.table(tab_Cor_Parto, 2)
 tab_Cor_Parto
 
 barplot(tab_Cor_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
+        main = "Frequência Relativa do Tipo de Parto 
+Segundo a Raça das Mães - Brasil, 2016",
         xlab = "Raça da Mãe",
         ylab = "Frequência Relativa", ylim = c(0, 1.0), 
         beside=FALSE, legend.text = TRUE, border = FALSE)
 
 
 barplot(tab_Cor_Parto, col = eq_col1[c(1,8)], horiz = FALSE,
+        main = "Frequência Relativa do Tipo de Parto 
+Segundo a Raça das Mães - Brasil, 2016",
         xlab = "Raça da Mãe",
         ylab = "Frequência Relativa", ylim = c(0, 1.2), 
         beside=TRUE, legend.text = TRUE, border = FALSE)
 
 ###################################################################
+
 
 
 
