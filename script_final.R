@@ -349,35 +349,35 @@ base_fin$PESO = base_fin$PESO/1000
 
 
 ###############################################################################
-
 ##Questão 04 ----------
 
 #transformando de factor para numerico
 base_fin$IDADEMAE = as.numeric(as.character(base_fin$IDADEMAE))
 
+
 #calculando o coeficiente de correlação de Pearson
 cor(base_fin$IDADEMAE,base_fin$PESO)
+
 #tabela peso do recém nascido x idade da mãe
 tabela_peso_idademae = data.frame(IDADEMAE = base_fin$IDADEMAE,
                                   PESO = base_fin$PESO,
                                   GESTACAO = base_fin$GESTACAO)
 tabela_peso_idademae$GESTACAO <- as.numeric(as.character(tabela_peso_idademae$GESTACAO)) 
-View(tabela_peso_idademae)
 
 #gráfico peso do recém nascido x idade da mãe
 
-graf_peso_idadamae = plot(base_fin$IDADEMAE, base_fin$PESO,
-                          main = "Relação entre a Idade da Mãe\n e o Peso dos Recém-Nascidos no Brasil em 2016",
-                          xlab = 'Idade da mãe',
-                          ylab = 'Peso do recém nascido',
-                          xlim = c(10,50),
-                          ylim = c(0, 6),
-                          col = eq_col1[1])
+plot(base_fin$IDADEMAE, base_fin$PESO,
+     main = "Relação entre a Idade da Mãe\n e o Peso dos Recém-Nascidos no Brasil em 2016",
+     xlab = 'Idade da mãe',
+     ylab = 'Peso do recém nascido',
+     xlim = c(10,50),
+     ylim = c(0, 6),
+     col = eq_col1[1])
 #abline(h = median(base_fin$PESO), col = eq_col1[7], lwd = 2, lty = 2)
 
 # Análise controlada para nascimentos prematuros
 
-tab_s_prematuros <- filter(tabela_peso_idademae, GESTACAO >= 5)[,1]
+tab_s_prematuros <- filter(tabela_peso_idademae, GESTACAO >= 5)
 
 
 plot(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO,
@@ -390,6 +390,9 @@ plot(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO,
 #abline(h = median(tab_s_prematuros$PESO), col = eq_col1[7], lwd = 2, lty = 2)
 
 cor(tab_s_prematuros$IDADEMAE, tab_s_prematuros$PESO)
+
+
+
 
 ###############################################################################
 
@@ -432,7 +435,7 @@ tab_Idade_Parto
 
 # C) Coeficiente R2 - Idade da Mãe e Tipo de Parto
 
-## sepando bases diferentes para calcular a variância da Idade
+## separando bases diferentes para calcular a variância da Idade
 ## em cada categoria (vaginal, cesáreo)
 
 base_idade_vag = filter(base_fin, PARTO == 1)
@@ -462,7 +465,6 @@ R2
 
 ## Associação inferior a 0,3. Apenas 1,8 % dos partos são explicados 
 ## pela variável idade.
-
 
 
 ## D) Gráfico - Idade e Tipo de Parto
